@@ -14,16 +14,13 @@ namespace FileLibrary
         private string _upn;
         private string _folderPath;
         private string _tenantId;
-        private string _folderOutput;
-        public FileUtils(string clientID, string clientSecret, string tenantId, string folderPath, string Upn, string folderOutput)
+        public FileUtils(string clientID, string clientSecret, string tenantId, string folderPath, string Upn)
         {
             _clientID = clientID;
             _clientSecret = clientSecret;
             TenantId = tenantId;
             _folderPath = folderPath;
-            _upn = Upn;
-            _folderOutput = folderOutput;
-            
+            _upn = Upn;            
         }
 
         public GraphServiceClient graphClient { get => _graphClient; set => _graphClient = value; }
@@ -32,7 +29,6 @@ namespace FileLibrary
         public string UPN { get => _upn; set => _upn = value; }
         public string FolderPath { get => _folderPath; set => _folderPath = value; }
         public string TenantId { get => _tenantId; set => _tenantId = value; }
-        public string FolderOutput { get => _folderOutput; set => _folderOutput = value; }
 
         private void createClient()
         {
@@ -126,7 +122,7 @@ namespace FileLibrary
             // Create the upload session
             // itemPath does not need to be a path to an existing item
             var uploadSession = await graphClient.Drives[driveItem.Id].Root
-                .ItemWithPath(Path.GetFileName(Path.Combine(FolderPath, Path.GetFileName( fileStream.Name))))
+                .ItemWithPath(Path.GetFileName( Path.GetFileName( fileStream.Name)))
                 .CreateUploadSession
                 .PostAsync(uploadSessionRequestBody);
 
@@ -138,7 +134,7 @@ namespace FileLibrary
             // Create a callback that is invoked after each slice is uploaded
             IProgress<long> progress = new Progress<long>(prog =>
             {
-                Console.WriteLine($"{Path.GetFileName(fileStream.Name)} Uploaded {prog} bytes of {totalLength} bytes");
+                Console.WriteLine($"{Path.GetFileName(fileStream.Name)} Uploaded {prog} bytes of {totalLength} bytes {(prog/1.0/totalLength)*100} %");
             });
 
             try

@@ -14,12 +14,12 @@ namespace ConsoleUploadFile2OneDrive // Note: actual namespace depends on the pr
     {
         static void Main(string[] args)
         {
+
             const string parameterFolderPath = "--path";
             const string parameterClientID = "--clientid";
             const string parameterClientSecret = "--clientsecret";
             const string parameterUPN = "--upn";
             const string parameterTenantId = "--tenantid";
-            const string parameterOutput = "--output";
 
             Console.WriteLine("Working");
            
@@ -27,10 +27,9 @@ namespace ConsoleUploadFile2OneDrive // Note: actual namespace depends on the pr
             string clientID = string.Empty;
             string upn = String.Empty;
             string clientSecret = string.Empty;
-            string output = String.Empty;
             string tenantid = string.Empty;
 
-
+            
             var length = args.Length;
 
             for (int i = 0; i < length; i++)
@@ -46,9 +45,6 @@ namespace ConsoleUploadFile2OneDrive // Note: actual namespace depends on the pr
                     case parameterFolderPath:
                         path = args[i + 1];
                         break;
-                    case parameterOutput:
-                        output = args[i + 1];
-                        break;
                     case parameterTenantId:
                         tenantid = args[i + 1];
                         break;
@@ -61,12 +57,12 @@ namespace ConsoleUploadFile2OneDrive // Note: actual namespace depends on the pr
                 }
             }
             if ( string.IsNullOrEmpty(clientID) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(path)
-                || string.IsNullOrEmpty(output) || string.IsNullOrEmpty(tenantid) || string.IsNullOrEmpty(upn))
+                 || string.IsNullOrEmpty(tenantid) || string.IsNullOrEmpty(upn))
             {
                 Console.WriteLine("Empty parameters!");
                 return;
             }
-            (new FileUtils(clientID, clientSecret, tenantid, path, upn, output)).Upload();
+            (new FileUtils(clientID, clientSecret, tenantid, path, upn)).Upload().Wait();
         }
     }
 }
