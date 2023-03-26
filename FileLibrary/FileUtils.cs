@@ -96,9 +96,9 @@ namespace FileLibrary
             var files = dirSearch(folder);
             foreach (var f in files)
             {
-               tasks.Add( UploadFileAsync(f));
+               await UploadFileAsync(f);
             }
-            await Task.WhenAll(tasks);
+            //await Task.WhenAll(tasks);
         }
 
         public async Task UploadFileAsync(string pathFile)
