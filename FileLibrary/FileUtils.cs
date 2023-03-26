@@ -127,7 +127,7 @@ namespace FileLibrary
                 .PostAsync(uploadSessionRequestBody);
 
             // Max slice size must be a multiple of 320 KiB
-            int maxSliceSize = 320 * 4024;
+            int maxSliceSize = 320 * 40240;
             var fileUploadTask = new LargeFileUploadTask<DriveItem>(uploadSession, fileStream, maxSliceSize, graphClient.RequestAdapter);
 
             var totalLength = fileStream.Length;
