@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUploadFile2OneDrive", "ConsoleUploadFile2OneDrive\ConsoleUploadFile2OneDrive.csproj", "{7DBCE573-1547-4EC3-B021-3014056F292C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileLibrary", "FileLibrary\FileLibrary.csproj", "{C7530046-D6CE-436F-988E-4CED9CB730F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{7DBCE573-1547-4EC3-B021-3014056F292C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DBCE573-1547-4EC3-B021-3014056F292C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DBCE573-1547-4EC3-B021-3014056F292C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7530046-D6CE-436F-988E-4CED9CB730F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7530046-D6CE-436F-988E-4CED9CB730F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7530046-D6CE-436F-988E-4CED9CB730F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7530046-D6CE-436F-988E-4CED9CB730F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
