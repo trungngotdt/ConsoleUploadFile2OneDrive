@@ -14,13 +14,15 @@ namespace FileLibrary
         private string _upn;
         private string _folderPath;
         private string _tenantId;
-        public FileUtils(string clientID, string clientSecret, string tenantId, string folderPath, string Upn)
+        private int _sizeMultiple;
+        public FileUtils(string clientID, string clientSecret, string tenantId, string folderPath, string Upn, int sizeMultiple)
         {
             _clientID = clientID;
             _clientSecret = clientSecret;
             TenantId = tenantId;
             _folderPath = folderPath;
-            _upn = Upn;            
+            _upn = Upn;
+            _sizeMultiple = sizeMultiple;
         }
 
         public GraphServiceClient graphClient { get => _graphClient; set => _graphClient = value; }
@@ -29,6 +31,7 @@ namespace FileLibrary
         public string UPN { get => _upn; set => _upn = value; }
         public string FolderPath { get => _folderPath; set => _folderPath = value; }
         public string TenantId { get => _tenantId; set => _tenantId = value; }
+        public int SizeMultiple { get => _sizeMultiple; set => _sizeMultiple = value; }
 
         private void createClient()
         {
@@ -127,7 +130,7 @@ namespace FileLibrary
                 .PostAsync(uploadSessionRequestBody);
 
             // Max slice size must be a multiple of 320 KiB
-            int maxSliceSize = 320 * 80240;
+            int maxSliceSize = 320 * SizeMultiple;
             var fileUploadTask = new LargeFileUploadTask<DriveItem>(uploadSession, fileStream, maxSliceSize, graphClient.RequestAdapter);
 
             var totalLength = fileStream.Length;
