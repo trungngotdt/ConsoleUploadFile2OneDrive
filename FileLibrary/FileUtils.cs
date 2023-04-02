@@ -130,7 +130,7 @@ namespace FileLibrary
             // itemPath does not need to be a path to an existing item
             if (!String.IsNullOrEmpty(_folderOutPutPath) && !String.IsNullOrWhiteSpace(_folderOutPutPath))
             {
-                await CreateFolderAsync(_folderOutPutPath,driveItem);
+                await CreateFolderAsync(_folderOutPutPath, driveItem);
                 path = Path.Combine(_folderOutPutPath, Path.GetFileName(Path.GetFileName(fileStream.Name)));
             }
             else
@@ -168,25 +168,34 @@ namespace FileLibrary
                 Console.WriteLine($"Error uploading: {ex.ToString()}");
             }
         }
-        private async Task<DriveItem> CreateFolderAsync(string path, Drive? driveItem=null)
+        private async Task<DriveItem> CreateFolderAsync(string path, Drive? driveItem = null)
         {
-            if (driveItem == null)
+            try
             {
-                driveItem = await graphClient.Users[UPN].Drive.GetAsync();
-            }
-            var driveItemFolder = new DriveItem
-            {
-                Folder = new Folder
+                if (driveItem == null)
                 {
-                },
-                AdditionalData = new Dictionary<string, object>()
+                    driveItem = await graphClient.Users[UPN].Drive.GetAsync();
+                }
+                var driveItemFolder = new DriveItem
+                {
+                    Folder = new Folder
+                    {
+                    },
+                    AdditionalData = new Dictionary<string, object>()
                 {
                     {"@microsoft.graph.conflictBehavior", "rename"}
                 }
-            };
-            var result = await graphClient.Drives[driveItem.Id].Root
-                .ItemWithPath(path).PatchAsync(driveItemFolder);
-            return result;
+                };
+                var result = await graphClient.Drives[driveItem.Id].Root
+                    .ItemWithPath(path).PatchAsync(driveItemFolder);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating folder: {ex.ToString()}");
+                return null;
+            }
+
         }
 
     }
