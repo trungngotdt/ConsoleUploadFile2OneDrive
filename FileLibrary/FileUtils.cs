@@ -98,7 +98,19 @@ namespace FileLibrary
         public async Task UploadFolderAsync(string folder)
         {
             var tasks = new List<Task>();
+            if (!String.IsNullOrEmpty(_folderOutPutPath) && !String.IsNullOrWhiteSpace(_folderOutPutPath))
+            {
+                var folderID = await CreateFolderAsync(_folderOutPutPath, null);
+                if (folderID != null)
+                {
+                    Console.WriteLine($"Folder is created : {folderID}");
+                }
+                else
+                {
+                    Console.WriteLine("New folder cannot create");
+                }
 
+            }
             var files = dirSearch(folder);
             foreach (var f in files)
             {
@@ -128,24 +140,8 @@ namespace FileLibrary
             var driveItem = await graphClient.Users[UPN].Drive.GetAsync();
             // Create the upload session
             // itemPath does not need to be a path to an existing item
-            if (!String.IsNullOrEmpty(_folderOutPutPath) && !String.IsNullOrWhiteSpace(_folderOutPutPath))
-            {
-                var folderID = await CreateFolderAsync(_folderOutPutPath, driveItem);
-                if(folderID != null)
-                {
-                    Console.WriteLine($"Folder is created : {folderID}");
-                }
-                else
-                {
-                    Console.WriteLine("New folder cannot create");
-                }
-                path = Path.Combine(_folderOutPutPath, Path.GetFileName(Path.GetFileName(fileStream.Name)));
-            }
-            else
-            {
-                path = Path.GetFileName(Path.GetFileName(fileStream.Name));
-            }
 
+            path = Path.Combine(_folderOutPutPath, Path.GetFileName(Path.GetFileName(fileStream.Name)));
             var uploadSession = await graphClient.Drives[driveItem.Id].Root
                 .ItemWithPath(path)
                 .CreateUploadSession
@@ -190,9 +186,9 @@ namespace FileLibrary
                     {
                     },
                     AdditionalData = new Dictionary<string, object>()
-                {
-                    {"@microsoft.graph.conflictBehavior", "rename"}
-                }
+                    {
+                        {"@microsoft.graph.conflictBehavior", "rename"}
+                    }
                 };
                 var result = await graphClient.Drives[driveItem.Id].Root
                     .ItemWithPath(path).PatchAsync(driveItemFolder);
