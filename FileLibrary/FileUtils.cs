@@ -130,7 +130,15 @@ namespace FileLibrary
             // itemPath does not need to be a path to an existing item
             if (!String.IsNullOrEmpty(_folderOutPutPath) && !String.IsNullOrWhiteSpace(_folderOutPutPath))
             {
-                await CreateFolderAsync(_folderOutPutPath, driveItem);
+                var folderID = await CreateFolderAsync(_folderOutPutPath, driveItem);
+                if(folderID != null)
+                {
+                    Console.WriteLine($"Folder is created : {folderID}");
+                }
+                else
+                {
+                    Console.WriteLine("New folder cannot create");
+                }
                 path = Path.Combine(_folderOutPutPath, Path.GetFileName(Path.GetFileName(fileStream.Name)));
             }
             else

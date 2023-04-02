@@ -62,7 +62,8 @@ namespace ConsoleUploadFile2OneDrive // Note: actual namespace depends on the pr
                     default:
                         break;
                 }
-            }        
+            }
+            
             if (string.IsNullOrEmpty(clientID) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(path)
                  || string.IsNullOrEmpty(tenantid) || string.IsNullOrEmpty(upn))
             {
