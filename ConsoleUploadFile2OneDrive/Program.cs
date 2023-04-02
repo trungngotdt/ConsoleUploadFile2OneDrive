@@ -21,6 +21,7 @@ namespace ConsoleUploadFile2OneDrive // Note: actual namespace depends on the pr
             const string parameterUPN = "--upn";
             const string parameterTenantId = "--tenantid";
             const string parameterSizeMultiple = "--size";
+            const string parameterOutPut = "--out";
             Console.WriteLine("Working");
 
             string path = String.Empty;
@@ -29,6 +30,7 @@ namespace ConsoleUploadFile2OneDrive // Note: actual namespace depends on the pr
             string clientSecret = string.Empty;
             string tenantid = string.Empty;
             int sizeMultiple = 1024;
+            string outPut = string.Empty;
 
             var length = args.Length;
 
@@ -36,6 +38,9 @@ namespace ConsoleUploadFile2OneDrive // Note: actual namespace depends on the pr
             {
                 switch (args[i].Trim().ToLower())
                 {
+                    case parameterOutPut:
+                        outPut = args[i + 1];
+                        break;
                     case parameterClientID:
                         clientID = args[i + 1];
                         break;
@@ -57,14 +62,14 @@ namespace ConsoleUploadFile2OneDrive // Note: actual namespace depends on the pr
                     default:
                         break;
                 }
-            }
+            }        
             if (string.IsNullOrEmpty(clientID) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(path)
                  || string.IsNullOrEmpty(tenantid) || string.IsNullOrEmpty(upn))
             {
                 Console.WriteLine("Empty parameters!");
                 return;
             }
-            (new FileUtils(clientID, clientSecret, tenantid, path, upn, sizeMultiple)).Upload().Wait();
+            (new FileUtils(clientID, clientSecret, tenantid, path, upn, sizeMultiple,outPut)).Upload().Wait();
         }
     }
 }

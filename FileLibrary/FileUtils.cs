@@ -13,10 +13,12 @@ namespace FileLibrary
         private string _clientSecret;
         private string _upn;
         private string _folderPath;
+        private string _folderOutPutPath;
         private string _tenantId;
         private int _sizeMultiple;
-        public FileUtils(string clientID, string clientSecret, string tenantId, string folderPath, string Upn, int sizeMultiple)
+        public FileUtils(string clientID, string clientSecret, string tenantId, string folderPath, string Upn, int sizeMultiple, string folderOutPutPath)
         {
+            _folderOutPutPath = folderOutPutPath;
             _clientID = clientID;
             _clientSecret = clientSecret;
             TenantId = tenantId;
@@ -32,6 +34,7 @@ namespace FileLibrary
         public string FolderPath { get => _folderPath; set => _folderPath = value; }
         public string TenantId { get => _tenantId; set => _tenantId = value; }
         public int SizeMultiple { get => _sizeMultiple; set => _sizeMultiple = value; }
+        public string FolderOutPutPath { get => _folderOutPutPath; set => _folderOutPutPath = value; }
 
         private void createClient()
         {
@@ -62,7 +65,7 @@ namespace FileLibrary
                 }
                 else
                 {
-                   await UploadFileAsync(FolderPath);
+                    await UploadFileAsync(FolderPath);
                 }
 
             }
@@ -95,18 +98,18 @@ namespace FileLibrary
         public async Task UploadFolderAsync(string folder)
         {
             var tasks = new List<Task>();
-            
+
             var files = dirSearch(folder);
             foreach (var f in files)
             {
-               await UploadFileAsync(f);
+                await UploadFileAsync(f);
             }
             //await Task.WhenAll(tasks);
         }
 
         public async Task UploadFileAsync(string pathFile)
         {
-            
+
             using var fileStream = System.IO.File.OpenRead(pathFile);
 
             // Use properties to specify the conflict behavior
@@ -121,11 +124,22 @@ namespace FileLibrary
                     }
                 }
             };
+            string path = "";
             var driveItem = await graphClient.Users[UPN].Drive.GetAsync();
             // Create the upload session
             // itemPath does not need to be a path to an existing item
+            if (!String.IsNullOrEmpty(_folderOutPutPath) && !String.IsNullOrWhiteSpace(_folderOutPutPath))
+            {
+                await CreateFolderAsync(_folderOutPutPath,driveItem);
+                path = Path.Combine(_folderOutPutPath, Path.GetFileName(Path.GetFileName(fileStream.Name)));
+            }
+            else
+            {
+                path = Path.GetFileName(Path.GetFileName(fileStream.Name));
+            }
+
             var uploadSession = await graphClient.Drives[driveItem.Id].Root
-                .ItemWithPath(Path.GetFileName( Path.GetFileName( fileStream.Name)))
+                .ItemWithPath(path)
                 .CreateUploadSession
                 .PostAsync(uploadSessionRequestBody);
 
@@ -137,7 +151,7 @@ namespace FileLibrary
             // Create a callback that is invoked after each slice is uploaded
             IProgress<long> progress = new Progress<long>(prog =>
             {
-                Console.WriteLine($"{Path.GetFileName(fileStream.Name)} Uploaded {prog} bytes of {totalLength} bytes {(prog/1.0/totalLength)*100} %");
+                Console.WriteLine($"{Path.GetFileName(fileStream.Name)} Uploaded {prog} bytes of {totalLength} bytes {(prog / 1.0 / totalLength) * 100} %");
             });
 
             try
@@ -153,6 +167,26 @@ namespace FileLibrary
             {
                 Console.WriteLine($"Error uploading: {ex.ToString()}");
             }
+        }
+        private async Task<DriveItem> CreateFolderAsync(string path, Drive? driveItem=null)
+        {
+            if (driveItem == null)
+            {
+                driveItem = await graphClient.Users[UPN].Drive.GetAsync();
+            }
+            var driveItemFolder = new DriveItem
+            {
+                Folder = new Folder
+                {
+                },
+                AdditionalData = new Dictionary<string, object>()
+                {
+                    {"@microsoft.graph.conflictBehavior", "rename"}
+                }
+            };
+            var result = await graphClient.Drives[driveItem.Id].Root
+                .ItemWithPath(path).PatchAsync(driveItemFolder);
+            return result;
         }
 
     }
