@@ -98,9 +98,9 @@ namespace FileLibrary
         public async Task UploadFolderAsync(string folder)
         {
             var tasks = new List<Task>();
-            if (!String.IsNullOrEmpty(_folderOutPutPath) && !String.IsNullOrWhiteSpace(_folderOutPutPath))
+            if (!String.IsNullOrEmpty(FolderOutPutPath) && !String.IsNullOrWhiteSpace(FolderOutPutPath))
             {
-                var folderID = await CreateFolderAsync(_folderOutPutPath, null);
+                var folderID = await CreateFolderAsync(FolderOutPutPath, null);
                 if (folderID != null)
                 {
                     Console.WriteLine($"Folder is created : {folderID}");
