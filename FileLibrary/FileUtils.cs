@@ -103,7 +103,7 @@ namespace FileLibrary
                 var folderID = await CreateFolderAsync(FolderOutPutPath, null);
                 if (folderID != null)
                 {
-                    Console.WriteLine($"Folder is created : {folderID}");
+                    Console.WriteLine($"Folder is created : {folderID.Name}");
                 }
                 else
                 {
